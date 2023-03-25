@@ -10,7 +10,14 @@ async function fetchSelectedTextAndDisplayEmojis() {
   const selectedText = window.getSelection().toString();
 
   if (selectedText) {
-    const emojis = await fetchEmojiSuggestions(selectedText);
+
+      const selectedText = window.getSelection().toString().trim();
+
+      if (selectedText) {
+        const language = (await chrome.storage.sync.get('language')).language || 'English';
+        const apikey = (await chrome.storage.sync.get('apikey')).apikey;
+        emojis = await fetchEmojiSuggestions(selectedText, language, apikey);
+      }
 
     if (emojis) {
       displayEmojis(emojis);
@@ -18,20 +25,21 @@ async function fetchSelectedTextAndDisplayEmojis() {
   }
 }
 
-async function fetchEmojiSuggestions(text) {
-  const apiKey = ''; // Замените на ваш API-ключ
+async function fetchEmojiSuggestions(text, language, apikey) {
   const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions';
+
+  const prompt = `Given the text "${text}"suggest three emojis (unicode characters) that are related to the text, along with a brief explanation for each. Awnser in ${language}`;
 
   try {
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${apikey}`
       },
       body: JSON.stringify({
-        prompt: `Given the text "${text}", suggest three emojis (unicode characters) that are related to the text, along with a brief explanation for each.`,
-        max_tokens: 100,
+        prompt: prompt,
+        max_tokens: 500,
         n: 1,
         stop: null,
         temperature: 0.5
@@ -74,7 +82,7 @@ function displayEmojis(emojiInfo) {
   emojiInfo.forEach(({ emoji, explanation }) => {
     const emojiElement = document.createElement('span');
     emojiElement.textContent = emoji;
-    emojiElement.style.fontSize = '28px';
+    emojiElement.style.fontSize = '14px';
     emojiElement.style.marginRight = '8px';
 
     const explanationElement = document.createElement('span');

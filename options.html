@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Emoji Suggest Options</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Emoji Suggest Options</h1>
+    <div>
+      <label>
+        Language:
+        <select id="language">
+          <option value="English">English</option>
+          <option value="Russian">Russian</option>
+          <!-- Добавьте другие языки, если хотите -->
+        </select>
+      </label>
+    </div>
+    <div>
+      <label>
+        Open AI, chat GPT API key(<a href="https://platform.openai.com/account/api-keys">link</a>):
+      <textarea id="apikey"></textarea>
+      </label>
+    </div>
+    <button id="save">Save</button>
+    <script src="options.js"></script>
+  </body>
+</html>
