@@ -2,7 +2,7 @@ chrome.runtime.onInstalled.addListener(() => {
   // Создаем основной пункт меню
   chrome.contextMenus.create({
     id: 'gpt-emoji-suggest-root',
-    title: ' GPT Assistant',
+    title: 'GPT Assistant',
     contexts: ['selection'],
   });
 
@@ -59,19 +59,25 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (!tab) return;
+
+  const tabId = tab.id;
+
   if (info.menuItemId === 'gpt-emoji-suggest-item1') {
-    chrome.tabs.sendMessage(tab.id, {command: 'fetchSelectedTextAndDisplayEmojis'});
+    tabId && chrome.tabs.sendMessage(tabId, {command: 'fetchSelectedTextAndDisplayEmojis'});
   } else if (info.menuItemId === 'gpt-emoji-suggest-item2') {
-    chrome.tabs.sendMessage(tab.id, {command: 'polite'});
+    tabId && chrome.tabs.sendMessage(tabId, {command: 'polite'});
   } else if (info.menuItemId === 'gpt-emoji-suggest-item3') {
-    chrome.tabs.sendMessage(tab.id, {command: 'aggresive'});
+    tabId && chrome.tabs.sendMessage(tabId, {command: 'aggresive'});
   } else if (info.menuItemId === 'gpt-emoji-suggest-item4') {
-    chrome.tabs.sendMessage(tab.id, {command: 'motivation'});
+    tabId && chrome.tabs.sendMessage(tabId, {command: 'motivation'});
   } else if (info.menuItemId === 'gpt-emoji-suggest-item5') {
-    chrome.tabs.sendMessage(tab.id, {command: 'articleTitle'});
+    tabId && chrome.tabs.sendMessage(tabId, {command: 'articleTitle'});
   } else if (info.menuItemId === 'gpt-emoji-suggest-item6') {
-    chrome.tabs.sendMessage(tab.id, {command: 'summary'});
+    tabId && chrome.tabs.sendMessage(tabId, {command: 'summary'});
   } else if (info.menuItemId === 'gpt-emoji-suggest-item7') {
-    chrome.tabs.sendMessage(tab.id, {command: 'sell'});
+    tabId && chrome.tabs.sendMessage(tabId, {command: 'sell'});
   }
 });
+
+export {}

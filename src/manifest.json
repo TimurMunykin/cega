@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "ChatGPT Emoji Suggester",
+  "version": "1.0",
+  "description": "Get emoji suggestions based on the selected text using ChatGPT.",
+  "permissions": ["contextMenus", "activeTab", "scripting", "storage"],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
