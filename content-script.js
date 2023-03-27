@@ -52,6 +52,9 @@ async function proccesMessage(command) {
           case 'summary':
             prompt = `Make summary for "${selectedText}". Awnser in ${language}`
             break;
+          case 'sell':
+            prompt = `Make this text more salesly: "${selectedText}". Awnser in ${language}`
+            break;
           default:
             break;
         }
@@ -133,7 +136,7 @@ function displayEmojis(emojiInfo) {
   const rect = range.getBoundingClientRect();
 
   const emojiPopup = document.createElement('div');
-  emojiPopup.style.position = 'fixed';
+  emojiPopup.style.position = 'absolute';
   emojiPopup.style.top = `${rect.top + window.scrollY - 50}px`;
   emojiPopup.style.left = `${rect.left + window.scrollX}px`;
   emojiPopup.style.backgroundColor = '#ffffff';
@@ -190,7 +193,7 @@ function showPopup(text) {
   const rect = range.getBoundingClientRect();
 
   const emojiPopup = document.createElement('div');
-  emojiPopup.style.position = 'fixed';
+  emojiPopup.style.position = 'absolute';
   emojiPopup.style.top = `${rect.top + window.scrollY - 50}px`;
   emojiPopup.style.left = `${rect.left + window.scrollX}px`;
   emojiPopup.style.backgroundColor = '#ffffff';
