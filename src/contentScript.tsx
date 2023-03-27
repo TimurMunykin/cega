@@ -6,65 +6,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-async function fetchSelectedTextAndDisplayEmojis() {
-  const selectedText = window.getSelection().toString();
-
-  if (selectedText) {
-
-      const selectedText = window.getSelection().toString().trim();
-
-      if (selectedText) {
-        const language = (await chrome.storage.sync.get('language')).language || 'English';
-        const apikey = (await chrome.storage.sync.get('apikey')).apikey;
-        emojis = await fetchEmojiSuggestions(selectedText, language, apikey);
-      }
-
-    if (emojis) {
-      displayEmojis(emojis);
-    }
-  }
-}
-
-async function proccesMessage(command) {
-  const selectedText = window.getSelection().toString();
-
-  if (selectedText) {
-
-      const selectedText = window.getSelection().toString().trim();
-
-      if (selectedText) {
-        const language = (await chrome.storage.sync.get('language')).language || 'English';
-        const apikey = (await chrome.storage.sync.get('apikey')).apikey;
-        let prompt = '';
-        switch (command) {
-          case 'polite':
-            prompt = `Given the text "${selectedText}" makes it more polite. Awnser in ${language}`
-            break;
-          case 'aggresive':
-            prompt = `Given the text "${selectedText}" makes it more aggresive. Awnser in ${language}`
-            break;
-          case 'motivation':
-            prompt = `Given the text "${selectedText}" makes it more motivated. Awnser in ${language}`
-            break;
-          case 'articleTitle':
-            prompt = `Make a title for article:"${selectedText}". Awnser in ${language}`
-            break;
-          case 'summary':
-            prompt = `Make summary for "${selectedText}". Awnser in ${language}`
-            break;
-          case 'sell':
-            prompt = `Make this text more salesly: "${selectedText}". Awnser in ${language}`
-            break;
-          default:
-            break;
-        }
-        const gptAnswer = await fetchProccesedMessage(apikey, prompt);
-        showPopup(gptAnswer);
-      }
-  }
-}
-
-async function fetchProccesedMessage(apikey, prompt) {
+async function fetchProccesedMessage(apikey: string, prompt: string) {
   const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions';
 
   try {
@@ -93,7 +35,7 @@ async function fetchProccesedMessage(apikey, prompt) {
   }
 }
 
-async function fetchEmojiSuggestions(text, language, apikey) {
+async function fetchEmojiSuggestions(text: string, language: string, apikey: string) {
   const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions';
 
   const prompt = `Given the text "${text}"suggest three emojis (unicode characters) that are related to the text, along with a brief explanation for each. Awnser in ${language}`;
@@ -116,7 +58,7 @@ async function fetchEmojiSuggestions(text, language, apikey) {
 
     const data = await response.json();
     const completion = data.choices[0].text;
-    const emojiInfo = completion.trim().split('\n').slice(0, 3).map(info => {
+    const emojiInfo = completion.trim().split('\n').slice(0, 3).map((info: string) => {
       const [emojiWithLabel, explanation] = info.split(': ');
       const emoji = emojiWithLabel.replace(/ *\([^)]*\) */, '');
       return { emoji, explanation };
@@ -129,10 +71,11 @@ async function fetchEmojiSuggestions(text, language, apikey) {
   }
 }
 
-
-function displayEmojis(emojiInfo) {
-  const selection = window.getSelection();
-  const range = selection.getRangeAt(0);
+function displayEmojis(emojiInfo: EmojiInfo[]) {
+  const range = getRange();
+  if (!range) {
+    return;
+  }
   const rect = range.getBoundingClientRect();
 
   const emojiPopup = document.createElement('div');
@@ -186,10 +129,16 @@ function displayEmojis(emojiInfo) {
   document.body.appendChild(emojiPopup);
 }
 
-
-function showPopup(text) {
+function getRange(): Range | null {
   const selection = window.getSelection();
-  const range = selection.getRangeAt(0);
+  return selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+}
+
+function showPopup(text: string) {
+  const range = getRange();
+  if (!range) {
+    return;
+  }
   const rect = range.getBoundingClientRect();
 
   const emojiPopup = document.createElement('div');
@@ -225,3 +174,71 @@ function showPopup(text) {
   emojiPopup.appendChild(closeButton);
   document.body.appendChild(emojiPopup);
 }
+
+// export {}
+
+// Добавьте определения типов и интерфейсы
+interface EmojiInfo {
+  emoji: string;
+  explanation: string;
+}
+
+type CommandType = 'polite' | 'aggresive' | 'motivation' | 'articleTitle' | 'summary' | 'sell';
+
+// Исправьте ошибки связанные с возможными значениями null
+function getSelectedText(): string | null {
+  const selection = window.getSelection();
+  return selection ? selection.toString().trim() : null;
+}
+
+
+async function fetchSelectedTextAndDisplayEmojis(): Promise<void> {
+  const selectedText = getSelectedText();
+
+  if (selectedText) {
+    const language = (await chrome.storage.sync.get('language')).language || 'English';
+    const apikey = (await chrome.storage.sync.get('apikey')).apikey;
+    const emojis = await fetchEmojiSuggestions(selectedText, language, apikey);
+
+    if (emojis) {
+      displayEmojis(emojis);
+    }
+  }
+}
+
+
+async function proccesMessage(command: CommandType): Promise<void> {
+  const selectedText = getSelectedText();
+
+  if (selectedText) {
+    const language = (await chrome.storage.sync.get('language')).language || 'English';
+    const apikey = (await chrome.storage.sync.get('apikey')).apikey;
+    let prompt = '';
+    switch (command) {
+      case 'polite':
+        prompt = `Given the text "${selectedText}" makes it more polite. Awnser in ${language}`;
+        break;
+      case 'aggresive':
+        prompt = `Given the text "${selectedText}" makes it more aggresive. Awnser in ${language}`;
+        break;
+      case 'motivation':
+        prompt = `Given the text "${selectedText}" makes it more motivated. Awnser in ${language}`;
+        break;
+      case 'articleTitle':
+        prompt = `Make a title for article:"${selectedText}". Awnser in ${language}`;
+        break;
+      case 'summary':
+        prompt = `Make summary for "${selectedText}". Awnser in ${language}`;
+        break;
+      case 'sell':
+        prompt = `Make this text more salesly: "${selectedText}". Awnser in ${language}`;
+        break;
+      default:
+        break;
+    }
+    const gptAnswer = await fetchProccesedMessage(apikey, prompt);
+    showPopup(gptAnswer);
+  }
+}
+
+export {}
