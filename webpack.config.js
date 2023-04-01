@@ -41,5 +41,9 @@ module.exports = {
         { from: 'src/icon.png', to: 'icon.png' },
       ],
     }),
-  ]
+  ],
+  watch: true,
+  watchOptions: {
+    ignored: /node_modules/
+  }
 };
