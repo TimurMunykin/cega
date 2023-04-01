@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Keywords</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 16px;
+      }
+      .form-input {
+        display: block;
+        margin-bottom: 8px;
+      }
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 16px;
+      }
+      .form-actions button {
+        margin-left: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Add Keywords</h1>
+    <div>
+      <label for="selectedText" class="form-input">Selected Text:</label>
+      <input type="text" id="selectedText" readonly class="form-input" />
+    </div>
+    <div>
+      <label for="keywords" class="form-input">Keywords:</label>
+      <input type="text" id="keywords" class="form-input" />
+    </div>
+    <div class="form-actions">
+      <button id="cancel">Cancel</button>
+      <button id="next">Next</button>
+    </div>
+    <script src="keywords.js"></script>
+  </body>
+</html>
