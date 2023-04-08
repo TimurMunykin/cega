@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ChatGPT Emoji Suggester",
-  "version": "1.0",
-  "description": "Get emoji suggestions based on the selected text using ChatGPT.",
+  "version": "1.1",
+  "description": "Get emoji suggestions based on the selected text using ChatGPT, with the ability to transform text using keywords.",
   "permissions": ["contextMenus", "activeTab", "scripting", "storage"],
   "icons": {
     "16": "icon.png",
@@ -18,5 +18,15 @@
       "matches": ["http://*/*", "https://*/*"],
       "js": ["contentScript.js"]
     }
-  ]
+  ],
+  "permissions": ["contextMenus"],
+  "commands": {
+    "transform_with_keywords": {
+      "suggested_key": {
+        "default": "Alt+K",
+        "mac": "Alt+K"
+      },
+      "description": "Transform selected text using keywords."
+    }
+  }
 }
